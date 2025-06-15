@@ -1,0 +1,31 @@
+﻿@model Skyly.Admin.Models.LoginViewModel
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<div class="login-box">
+    <div class="login-logo"><b>Skyly</b> Admin</div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">قم بتسجيل الدخول</p>
+
+            <form asp-action="Login" method="post">
+                <div class="input-group mb-3">
+                    <input asp-for="Username" class="form-control" placeholder="اسم المستخدم" />
+                </div>
+                <div class="input-group mb-3">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="كلمة المرور" />
+                </div>
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="text-danger">@Model.ErrorMessage</div>
+                }
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
