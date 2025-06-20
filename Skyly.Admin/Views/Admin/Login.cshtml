@@ -1,31 +1,79 @@
 ﻿@model Skyly.Admin.Models.LoginViewModel
 @{
-    ViewData["Title"] = "تسجيل الدخول";
+    Layout = null;
 }
 
-<div class="login-box">
-    <div class="login-logo"><b>Skyly</b> Admin</div>
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">قم بتسجيل الدخول</p>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SKYLY Admin</title>
 
-            <form asp-action="Login" method="post">
-                <div class="input-group mb-3">
-                    <input asp-for="Username" class="form-control" placeholder="اسم المستخدم" />
-                </div>
-                <div class="input-group mb-3">
-                    <input asp-for="Password" type="password" class="form-control" placeholder="كلمة المرور" />
-                </div>
-                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                {
-                    <div class="text-danger">@Model.ErrorMessage</div>
-                }
-                <div class="row">
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+    <!-- خط Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- AdminLTE RTL + Font Awesome + iCheck -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte-with-rtl@3.1.0/dist/css/adminlte.rtl.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@5.15/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" />
+
+    <!-- تخصيص الخط والاتجاه -->
+    <style>
+        body, html, input, select, textarea, button {
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .login-logo b {
+            color: #007bff;
+        }
+
+        .alert {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <b>لوحة التحكم</b>
+        </div>
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">يرجى إدخال بيانات الدخول</p>
+
+                <form asp-action="Login" method="post">
+                    <div class="input-group mb-3">
+                        <input asp-for="Username" name="Username" class="form-control" placeholder="اسم المستخدم" required />
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fas fa-user"></i></div>
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <div class="input-group mb-3">
+                        <input asp-for="Password" name="Password" type="password" class="form-control" placeholder="كلمة المرور" required />
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger text-center">@Model.ErrorMessage</div>
+                    }
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- سكريبتات -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte-with-rtl@3.1.0/dist/js/adminlte.min.js"></script>
+</body>
+</html>

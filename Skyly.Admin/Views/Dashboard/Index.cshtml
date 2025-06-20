@@ -1,0 +1,86 @@
+﻿@using System.Security.Claims
+@using Skyly.Business.Models
+@model DashboardStatsDto
+@functions {
+    bool HasPermission(string permission)
+    {
+        return User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == permission);
+    }
+}
+@{
+    ViewData["Title"] = " الرئيسية";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+
+            @if (HasPermission("ManageHotels-View"))
+            {
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>@Model.HotelsCount</h3>
+                            <p>عدد الفنادق</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <a href="/Hotel" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                    </div>
+                </div>
+            }
+
+            @if (HasPermission("ManageRooms-View"))
+            {
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>@Model.RoomsCount</h3>
+                            <p>عدد الغرف</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <a href="/Room" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                    </div>
+                </div>
+            }
+
+            @if (HasPermission("ManageAdmins-View"))
+            {
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>@Model.AdminsCount</h3>
+                            <p>عدد مسؤولي النظام</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <a href="/AdminUsers" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                    </div>
+                </div>
+            }
+
+            @if (HasPermission("ViewReports-Bookings"))
+            {
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>@Model.BookingsCount</h3>
+                            <p>عدد الحجوزات</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <a href="/Booking" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+

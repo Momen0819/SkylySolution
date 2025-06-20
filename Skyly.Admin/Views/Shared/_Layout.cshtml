@@ -1,0 +1,197 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    string adminName = HttpContextAccessor.HttpContext?.User?.Identity?.Name ?? "أدمن";
+    bool HasPermission(string role) => HttpContextAccessor.HttpContext?.User?.IsInRole(role) ?? false;
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SKYLY Admin</title>
+
+    <!-- Tajawal Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- AdminLTE RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte-with-rtl@3.1.0/dist/css/adminlte.rtl.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@5.15/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" />
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .nav-sidebar .nav-link {
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> مرحباً @adminName
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right text-right">
+                        <a href="/Admin/Profile" class="dropdown-item">
+                            <i class="fas fa-user-edit mr-2"></i> تعديل الحساب
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/Admin/Logout" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt mr-2"></i> تسجيل الخروج
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="#" class="brand-link text-center">
+                <span class="brand-text font-weight-light">لوحة التحكم</span>
+            </a>
+
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+
+                        <li class="nav-item">
+                            <a href="/Dashboard/Index" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>الرئيسية</p>
+                            </a>
+                        </li>
+
+                        @if (HasPermission("ManageHotels-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Hotel/Index" class="nav-link">
+                                    <i class="nav-icon fas fa-hotel"></i>
+                                    <p>الفنادق</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ManageRooms-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Room" class="nav-link">
+                                    <i class="nav-icon fas fa-bed"></i>
+                                    <p>الغرف</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ManageAdmins-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/AdminUsers" class="nav-link">
+                                    <i class="nav-icon fas fa-users-cog"></i>
+                                    <p>المشرفين</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ManageBlogs-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Blog" class="nav-link">
+                                    <i class="nav-icon fas fa-blog"></i>
+                                    <p>المدونة</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ManageFAQs-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/FAQ" class="nav-link">
+                                    <i class="nav-icon fas fa-question-circle"></i>
+                                    <p>الأسئلة الشائعة</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ManageMessages-View"))
+                        {
+                            <li class="nav-item">
+                                <a href="/ContactMessages" class="nav-link">
+                                    <i class="nav-icon fas fa-envelope"></i>
+                                    <p>رسائل التواصل</p>
+                                </a>
+                            </li>
+                        }
+
+                        @if (HasPermission("ViewReports-Dashboard"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports" class="nav-link">
+                                    <i class="nav-icon fas fa-chart-line"></i>
+                                    <p>التقارير</p>
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <div class="content-wrapper p-3">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+            </section>
+            @RenderBody()
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer text-center">
+            جميع الحقوق محفوظة &copy; SKYLY @DateTime.Now.Year
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte-with-rtl@3.1.0/dist/js/adminlte.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var currentUrl = window.location.pathname.toLowerCase();
+
+            document.querySelectorAll(".nav-sidebar a.nav-link").forEach(function (link) {
+                var linkHref = link.getAttribute("href")?.toLowerCase();
+
+                if (linkHref && currentUrl.includes(linkHref)) {
+                    link.classList.add("active");
+
+                    // لو داخل شجرة متعددة collapse مثلاً
+                    let parent = link.closest(".has-treeview");
+                    if (parent) {
+                        parent.classList.add("menu-open");
+                        let parentLink = parent.querySelector(".nav-link");
+                        if (parentLink) {
+                            parentLink.classList.add("active");
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

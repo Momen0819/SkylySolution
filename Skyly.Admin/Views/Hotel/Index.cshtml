@@ -1,0 +1,97 @@
+﻿@using Skyly.Domain.Entities
+@model List<Hotel>
+
+@{
+    ViewData["Title"] = "الفنادق";
+    Func<string, bool> HasPermission = role => User.IsInRole(role);
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-12 text-right">
+                @if (HasPermission("ManageHotels-Add"))
+                {
+                    <a href="@Url.Action("Create", "Hotel")" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> إضافة فندق
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table id="hotelsTable" class="table table-bordered table-striped dt-responsive nowrap w-100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>الاسم</th>
+                                <th>العنوان</th>
+                                <th>الهاتف</th>
+                                <th>الإيميل</th>
+                                <th>نسبة الربح</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (var hotel in Model)
+                                {
+                                    <tr>
+                                        <td>@hotel.Name</td>
+                                        <td>@hotel.Address</td>
+                                        <td>@hotel.Phone</td>
+                                        <td>@hotel.Email</td>
+                                        <td>@hotel.ProfitPercentage %</td>
+                                        <td>
+                                            @if (HasPermission("ManageHotels-Edit"))
+                                            {
+                                                <a href="@Url.Action("Edit", "Hotel", new { id = hotel.Id })" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> تعديل
+                                                </a>
+                                            }
+                                            @if (HasPermission("ManageHotels-Delete"))
+                                            {
+                                                <a href="@Url.Action("Delete", "Hotel", new { id = hotel.Id })"
+                                                   class="btn btn-sm btn-danger"
+                                                   onclick="return confirm('هل أنت متأكد من الحذف؟');">
+                                                    <i class="fas fa-trash-alt"></i> حذف
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">لا توجد فنادق حالياً</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#hotelsTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+                }
+            });
+        });
+    </script>
+}

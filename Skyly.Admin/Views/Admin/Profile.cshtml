@@ -1,0 +1,55 @@
+﻿@model Skyly.Admin.Models.AdminProfileViewModel
+
+@{
+    ViewData["Title"] = "تعديل بيانات الحساب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+        <div class="container-fluid">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <form asp-action="Profile" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">بيانات الحساب</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="FullName">الاسم بالكامل</label>
+                            <input asp-for="FullName" name="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NewPassword">كلمة المرور الجديدة</label>
+                            <input asp-for="NewPassword" name="NewPassword" class="form-control" type="password" />
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ConfirmPassword">تأكيد كلمة المرور</label>
+                            <input asp-for="ConfirmPassword" name="ConfirmPassword" class="form-control" type="password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-left">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

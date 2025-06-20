@@ -1,4 +1,5 @@
-﻿using Skyly.Domain.Entities;
+﻿using Skyly.Business.Models;
+using Skyly.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Skyly.Business.Interfaces
 {
     public interface IAdminService
     {
-        Task<Admin> LoginAsync(string username, string password);
+        Task<AdminLoginResult> LoginAsync(string username, string password);
+        Task<Admin?> GetByIdAsync(Guid id);
+        Task<bool> UpdateProfileAsync(UpdateAdminProfileDto dto);
     }
 }

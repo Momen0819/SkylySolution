@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Skyly.Domain.Entities;
 using System;
 using System.Linq;
@@ -13,56 +13,90 @@ namespace Skyly.Domain
 
             if (!context.Admins.Any())
             {
+                var now = DateTime.UtcNow;
+                var adminId = Guid.NewGuid();
+
                 var admin = new Admin
                 {
-                    Id = Guid.NewGuid(),
+                    Id = adminId,
                     Username = "admin",
-                    PasswordHash = "admin123", // Replace with hashed password in real case
+                    PasswordHash = "admin123", // TODO: استخدم تشفير بعدين
                     FullName = "Super Admin",
                     Email = "admin@skyly.com",
                     IsActive = true,
-                    CreatedBy = "System",
-                    LastModifiedBy = "System",
-                    LastModifiedDate = DateTime.UtcNow,
+                    CreatedBy = Guid.Empty,
+                    LastModifiedBy = Guid.Empty,
+                    LastModifiedDate = now,
                     IsDeleted = false
                 };
-
                 context.Admins.Add(admin);
 
-                var roles = new[]
+                // ✅ قائمة الصلاحيات
+                var roleDefinitions = new (string Name, string TitleAr, string TitleEn)[]
                 {
-                    "ManageHotels",
-                    "ManageRooms",
-                    "ManageAdmins",
-                    "ManageBlogs",
-                    "ManageFAQs",
-                    "ViewReports"
+                    // الفنادق
+                    ("ManageHotels-View", "عرض الفنادق", "View Hotels"),
+                    ("ManageHotels-Add", "إضافة فندق", "Add Hotel"),
+                    ("ManageHotels-Edit", "تعديل فندق", "Edit Hotel"),
+                    ("ManageHotels-Delete", "حذف فندق", "Delete Hotel"),
+
+                    // الغرف
+                    ("ManageRooms-View", "عرض الغرف", "View Rooms"),
+                    ("ManageRooms-Add", "إضافة غرفة", "Add Room"),
+                    ("ManageRooms-Edit", "تعديل غرفة", "Edit Room"),
+                    ("ManageRooms-Delete", "حذف غرفة", "Delete Room"),
+
+                    // المشرفين
+                    ("ManageAdmins-View", "عرض المشرفين", "View Admins"),
+                    ("ManageAdmins-Add", "إضافة مشرف", "Add Admin"),
+                    ("ManageAdmins-Edit", "تعديل مشرف", "Edit Admin"),
+                    ("ManageAdmins-Delete", "حذف مشرف", "Delete Admin"),
+
+                    // المدونة
+                    ("ManageBlogs-View", "عرض المقالات", "View Blogs"),
+                    ("ManageBlogs-Add", "إضافة مقال", "Add Blog"),
+                    ("ManageBlogs-Edit", "تعديل مقال", "Edit Blog"),
+                    ("ManageBlogs-Delete", "حذف مقال", "Delete Blog"),
+
+                    // الأسئلة الشائعة
+                    ("ManageFAQs-View", "عرض الأسئلة الشائعة", "View FAQs"),
+                    ("ManageFAQs-Add", "إضافة سؤال", "Add FAQ"),
+                    ("ManageFAQs-Edit", "تعديل سؤال", "Edit FAQ"),
+                    ("ManageFAQs-Delete", "حذف سؤال", "Delete FAQ"),
+
+                    // التقارير
+                    ("ViewReports-Bookings", "تقرير الحجوزات", "View Bookings Report"),
+                    ("ViewReports-Rooms", "تقرير الغرف", "View Rooms Report"),
+                    ("ViewReports-Hotels", "تقرير الفنادق", "View Hotels Report"),
+                    ("ViewReports-Clients", "تقرير العملاء", "View Clients Report"),
+                    ("ViewReports-Financial", "تقرير المعاملات المالية", "View Financial Report"),
                 };
 
-                foreach (var roleName in roles)
+                // ✅ إدخال الصلاحيات وربطها بالمشرف
+                foreach (var (name, titleAr, titleEn) in roleDefinitions)
                 {
-                    var role = new Role
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = roleName,
-                        TitleAr = roleName,
-                        TitleEn = roleName,
-                        CreatedBy = "System",
-                        LastModifiedBy = "System",
-                        LastModifiedDate = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
+                    var roleId = Guid.NewGuid();
 
-                    context.Roles.Add(role);
+                    context.Roles.Add(new Role
+                    {
+                        Id = roleId,
+                        Name = name,
+                        TitleAr = titleAr,
+                        TitleEn = titleEn,
+                        CreatedBy = Guid.Empty,
+                        LastModifiedBy = Guid.Empty,
+                        LastModifiedDate = now,
+                        IsDeleted = false
+                    });
 
                     context.AdminRoles.Add(new AdminRole
                     {
                         Id = Guid.NewGuid(),
-                        AdminId = admin.Id,
-                        RoleId = role.Id,
-                        CreatedBy = "System",
-                        LastModifiedBy = "System",
-                        LastModifiedDate = DateTime.UtcNow,
+                        AdminId = adminId,
+                        RoleId = roleId,
+                        CreatedBy = Guid.Empty,
+                        LastModifiedBy = Guid.Empty,
+                        LastModifiedDate = now,
                         IsDeleted = false
                     });
                 }

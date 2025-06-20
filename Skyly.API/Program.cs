@@ -16,7 +16,7 @@ builder.Services.AddDbContext<SkylyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Authentication
-var key = Encoding.ASCII.GetBytes("YourSuperSecretKeyHere!");
+var key = Encoding.ASCII.GetBytes("tL4m&9eZqB$R1x!WaU7@rM3^NgpXv2#J");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

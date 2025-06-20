@@ -18,6 +18,8 @@ namespace Skyly.Business.Extensions
 
             // Register services
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IHotelService, Services.HotelService>();
             // Add more services as needed...
 
             return services;
