@@ -31,6 +31,8 @@ namespace Skyly.Domain
         public DbSet<WebsiteData> WebsiteData { get; set; }
         public DbSet<RoomStatusLog> RoomStatusLogs { get; set; }
         public DbSet<Facility> Facilities { get; set; }
+        public DbSet<HotelUser> HotelUsers { get; set; }
+        public DbSet<Service> Services { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

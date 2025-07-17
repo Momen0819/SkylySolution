@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = "الفنادق";
     Func<string, bool> HasPermission = role => User.IsInRole(role);
+    bool canEdit = HasPermission("ManageHotels-Edit");
+    bool canDelete = HasPermission("ManageHotels-Delete");
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
@@ -48,13 +50,14 @@
                                         <td>@hotel.Email</td>
                                         <td>@hotel.ProfitPercentage %</td>
                                         <td>
-                                            @if (HasPermission("ManageHotels-Edit"))
+                                            @if (canEdit)
                                             {
                                                 <a href="@Url.Action("Edit", "Hotel", new { id = hotel.Id })" class="btn btn-sm btn-warning">
                                                     <i class="fas fa-edit"></i> تعديل
                                                 </a>
                                             }
-                                            @if (HasPermission("ManageHotels-Delete"))
+
+                                            @if (canDelete)
                                             {
                                                 <a href="@Url.Action("Delete", "Hotel", new { id = hotel.Id })"
                                                    class="btn btn-sm btn-danger"
@@ -66,12 +69,7 @@
                                     </tr>
                                 }
                             }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted">لا توجد فنادق حالياً</td>
-                                </tr>
-                            }
+                            
                         </tbody>
                     </table>
                 </div>
@@ -88,6 +86,7 @@
         $(document).ready(function () {
             $('#hotelsTable').DataTable({
                 responsive: true,
+                ordering: false,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
                 }

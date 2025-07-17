@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Skyly.Domain;
 
@@ -11,9 +12,11 @@ using Skyly.Domain;
 namespace Skyly.Domain.Migrations
 {
     [DbContext(typeof(SkylyDbContext))]
-    partial class SkylyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620024533_jgjhfgfjgj")]
+    partial class jgjhfgfjgj
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

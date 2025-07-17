@@ -8,6 +8,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.JsonResult" Version="1.0.5778.10762" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Skyly.Business\Skyly.Business.csproj" />

@@ -1,65 +1,196 @@
-﻿@using Skyly.Domain.Entities
-@model Hotel
+﻿@model Skyly.Domain.Entities.Hotel
+@using Newtonsoft.Json
 
 @{
     ViewData["Title"] = "إضافة فندق";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var allServices = ViewBag.AllServices as List<dynamic>;
+}
+
+@section Styles {
+    <style>
+        .remove-btn {
+            cursor: pointer;
+            color: red;
+        }
+
+        img.hotel-preview {
+            width: 100px;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+    </style>
 }
 
 <section class="content">
-    <div class="container-fluid">
-        <div class="row mb-3">
-            <div class="col-12">
-                <h4>إضافة فندق جديد</h4>
-            </div>
-        </div>
-
-        <form asp-action="Create" method="post">
+        <form method="post" enctype="multipart/form-data" data-bind="submit: saveHotel">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
+
                     <div class="form-group">
-                        <label asp-for="Name">اسم الفندق</label>
-                        <input asp-for="Name" name="Name" class="form-control" required />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label>اسم الفندق</label>
+                        <input type="text" name="Name" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Address">العنوان</label>
-                        <input asp-for="Address" name="Address" class="form-control" required />
-                        <span asp-validation-for="Address" class="text-danger"></span>
+                        <label>العنوان</label>
+                        <input type="text" name="Address" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Phone">رقم الهاتف</label>
-                        <input asp-for="Phone" name="Phone" class="form-control" required />
-                        <span asp-validation-for="Phone" class="text-danger"></span>
+                        <label>رقم الهاتف</label>
+                        <input type="text" name="Phone" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Email">البريد الإلكتروني</label>
-                        <input asp-for="Email" type="email" name="Email" class="form-control" required />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" name="Email" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="CommissionPercentage">نسبة الربح (%)</label>
-                        <input asp-for="CommissionPercentage" name="CommissionPercentage" type="number" class="form-control" step="0.01" required />
-                        <span asp-validation-for="CommissionPercentage" class="text-danger"></span>
+                        <label>نسبة الربح (%)</label>
+                        <input type="number" name="ProfitPercentage" class="form-control" step="0.01" required />
                     </div>
 
-                    <div class="form-group mt-3">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save"></i> حفظ
-                        </button>
-                        <a href="@Url.Action("Index", "Hotel")" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> إلغاء
-                        </a>
+                    <div class="form-group">
+                        <label>اسم المستخدم</label>
+                        <input type="text" name="Username" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" name="Password" class="form-control" required />
                     </div>
                 </div>
+
+                <div class="col-md-12">
+
+                    <!-- صور الفندق -->
+                    <div class="form-group">
+                        <label>صور الفندق</label>
+                        <input type="file" class="form-control" multiple data-bind="event: { change: onImageSelect }" />
+                    </div>
+
+                    <div class="form-group" data-bind="if: images().length > 0">
+                        <label>الصور المختارة</label>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>صورة</th>
+                                    <th>الترتيب</th>
+                                    <th>الإجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: images">
+                                <tr>
+                                    <td><img data-bind="attr: { src: url }" class="hotel-preview" /></td>
+                                    <td><input type="number" class="form-control" data-bind="value: sort" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" data-bind="click: $parent.removeImage">حذف</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- خدمات الفندق -->
+                    <div class="form-group mt-4">
+                        <label>اختر خدمة</label>
+                        <select class="form-control" data-bind="value: selectedServiceId, options: allServices, optionsText: 'Name', optionsValue: 'Id', optionsCaption: 'اختر خدمة'"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>الترتيب</label>
+                        <input type="number" class="form-control" data-bind="value: serviceSort" placeholder="ترتيب الخدمة" />
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-sm mb-2" data-bind="click: addService">
+                        <i class="fas fa-plus"></i> إضافة الخدمة
+                    </button>
+
+                    <div class="form-group" data-bind="if: services().length > 0">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>الخدمة</th>
+                                    <th>الترتيب</th>
+                                    <th>الإجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: services">
+                                <tr>
+                                    <td data-bind="text: serviceName"></td>
+                                    <td><input type="number" class="form-control" data-bind="value: sort" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" data-bind="click: $parent.removeService">حذف</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-success">حفظ</button>
+                <a href="@Url.Action("Index", "Hotel")" class="btn btn-secondary">إلغاء</a>
             </div>
         </form>
     </div>
 </section>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+    <script>
+        function HotelViewModel(allServices) {
+            var self = this;
+
+            self.allServices = allServices;
+            self.selectedServiceId = ko.observable();
+            self.serviceSort = ko.observable(1);
+            self.services = ko.observableArray([]);
+            self.images = ko.observableArray([]);
+
+            self.addService = function () {
+                var id = self.selectedServiceId();
+                var service = self.allServices.find(s => s.Id === id);
+                if (service) {
+                    self.services.push({
+                        serviceId: id,
+                        serviceName: service.Name,
+                        sort: self.serviceSort()
+                    });
+                    self.serviceSort(self.serviceSort() + 1);
+                }
+            };
+
+            self.removeService = function (service) {
+                self.services.remove(service);
+            };
+
+            self.onImageSelect = function (event) {
+                var files = event.target.files;
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        self.images.push({
+                            url: e.target.result,
+                            file: file,
+                            sort: self.images().length + 1
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            self.removeImage = function (image) {
+                self.images.remove(image);
+            };
+
+            self.saveHotel = function (formElement) {
+                return true;
+            };
+        }
+
+        const services = @Html.Raw(JsonConvert.SerializeObject(ViewBag.AllServices));
+        ko.applyBindings(new HotelViewModel(services));
+    </script>
 }

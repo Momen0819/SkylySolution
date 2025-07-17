@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Skyly.Business.Interfaces;
+using Skyly.Business.Models;
 using Skyly.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,52 @@ namespace Skyly.Business.Services
             string sql = @"UPDATE Hotels SET IsDeleted = 1, LastModifiedDate = @date WHERE Id = @id";
             _db.Execute(sql, new { id, date = DateTime.Now });
         }
-    }
 
+        public List<SimpleServiceDto> GetAllServices()
+        {
+            string sql = "SELECT Id, NameAr as Name FROM Services";
+            return _db.Query<SimpleServiceDto>(sql).ToList();
+        }
+
+        public void CreateHotelWithDetails(Hotel hotel, HotelUser user, List<HotelImage> images, List<Domain.Entities.HotelService> services)
+        {
+            using var transaction = _db.BeginTransaction();
+
+            try
+            {
+                // 1. Insert Hotel
+                string hotelSql = @"INSERT INTO Hotels (Id, Name, Address, Phone, Email, ProfitPercentage, CreatedBy, CreatedDate, IsDeleted)
+                            VALUES (@Id, @Name, @Address, @Phone, @Email, @ProfitPercentage, @CreatedBy, @CreatedDate, 0)";
+                _db.Execute(hotelSql, hotel, transaction);
+
+                // 2. Insert HotelUser
+                string userSql = @"INSERT INTO HotelUsers (Id, HotelId, Username, PasswordHash, IsActive, CreatedBy, CreatedDate, IsDeleted)
+                           VALUES (@Id, @HotelId, @Username, @PasswordHash, @IsActive, @CreatedBy, @CreatedDate, 0)";
+                _db.Execute(userSql, user, transaction);
+
+                // 3. Insert HotelImages
+                if (images?.Count > 0)
+                {
+                    string imageSql = @"INSERT INTO HotelImages (Id, HotelId, ImagePath, Sort, CreatedBy, CreatedDate, IsDeleted)
+                                VALUES (@Id, @HotelId, @ImagePath, @Sort, @CreatedBy, @CreatedDate, 0)";
+                    _db.Execute(imageSql, images, transaction);
+                }
+
+                // 4. Insert HotelServices
+                if (services?.Count > 0)
+                {
+                    string serviceSql = @"INSERT INTO HotelServices (Id, HotelId, ServiceId, Sort, CreatedBy, CreatedDate, IsDeleted)
+                                  VALUES (@Id, @HotelId, @ServiceId, @Sort, @CreatedBy, @CreatedDate, 0)";
+                    _db.Execute(serviceSql, services, transaction);
+                }
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+    }
 }

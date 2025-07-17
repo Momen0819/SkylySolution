@@ -14,6 +14,9 @@ namespace Skyly.Domain.Entities
         public double ProfitPercentage { get; set; }
         public bool IsActive { get; set; }
 
+        public ICollection<HotelService> HotelServices { get; set; }
+        public ICollection<HotelImage> HotelImages { get; set; }
+        public ICollection<HotelUser> HotelUsers { get; set; }
         public ICollection<Room> Rooms { get; set; }
         public ICollection<Booking> Bookings { get; set; }
         public ICollection<Review> Reviews { get; set; }

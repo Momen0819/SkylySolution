@@ -1,4 +1,5 @@
-﻿using Skyly.Domain.Entities;
+﻿using Skyly.Business.Models;
+using Skyly.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Skyly.Business.Interfaces
         void Create(Hotel hotel);
         void Update(Hotel hotel);
         void Delete(Guid id);
+        List<SimpleServiceDto> GetAllServices();
+        void CreateHotelWithDetails(Hotel hotel, HotelUser user, List<HotelImage> images, List<HotelService> services);
     }
 }
